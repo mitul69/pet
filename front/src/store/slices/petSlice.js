@@ -17,6 +17,14 @@ export const getBreedsById = createAsyncThunk(
     }
 );
 
+export const createPet = createAsyncThunk(
+    'pet/createPet',
+    async (data) => {
+        const response = await axiosInstance.post(`pet`, data); // Replace with your API endpoint
+        return response.data; // Assuming the response contains a list of categories
+    }
+);
+
 
 const initialState = {
     loading: false,
@@ -55,6 +63,18 @@ const petSlice = createSlice({
                 state.breeds = action.payload;
             })
             .addCase(getBreedsById.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(createPet.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createPet.fulfilled, (state, action) => {
+                state.loading = false;
+                state.created = true;
+            })
+            .addCase(createPet.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             });

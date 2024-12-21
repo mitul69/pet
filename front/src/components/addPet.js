@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useSelector, useDispatch } from 'react-redux';
-import { getBreedsById } from '../store/slices/petSlice';
+import { createPet, getBreedsById } from '../store/slices/petSlice';
 
-const AddPet = () => {
+const AddPet = ({handleClose}) => {
 
 
     const { categories, breeds } = useSelector((state) => state.pet);
@@ -52,11 +52,19 @@ const AddPet = () => {
             dispatch(getBreedsById(values.category))
         }
         if (step < 3) setStep(step + 1);
-        else console.log('Final Values:', values); // Submit form values
+        else {
+            dispatch(createPet(values));
+            handleClose(true)
+        }; // Submit form values
     };
 
     const handlePrev = () => {
-        if (step > 1) setStep(step - 1);
+        if (step > 1) {
+            setStep(step - 1)
+        }
+        else {
+            handleClose(false)
+        };
     };
 
 
@@ -124,7 +132,7 @@ const AddPet = () => {
 
                         <div className="inline-flex rounded-md shadow-sm" role="group">
                             <button
-                                onClick={() => { setValues({ ...values,'gender': 'Male' }) }}
+                                onClick={() => { setValues({ ...values, 'gender': 'Male' }) }}
                                 type="button" className={(values.gender === "Male" ? "text-white bg-blue-500" : "text-gray-900 bg-white") + " px-4 py-2 text-sm font-medium border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white "}>
                                 Male
                             </button>
@@ -264,7 +272,6 @@ const AddPet = () => {
                                     <button
                                         type="button"
                                         onClick={handlePrev}
-                                        disabled={step === 1}
                                         className="bg-gray-300 text-gray-700 px-4 py-2 rounded disabled:opacity-50"
                                     >
                                         {step === 1 ? 'Close' : 'Previous'}

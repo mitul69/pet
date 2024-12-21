@@ -1,9 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddPet from "../components/addPet";
-
+import axiosInstance from "../util/axiosInstance";
 
 const Pets = () => {
 
+    const [pets, setPates] = useState([]);
+
+    useEffect(() => {
+
+        getPets()
+
+
+
+    }, [])
+    const getPets = async () => {
+        const res = await axiosInstance.get("pets");
+        setPates(res.data || []);
+    }
     const [showAddModal, setShowAddModal] = useState(false)
     return (
         <div className="shadow-md dark:bg-gray-800">
@@ -26,67 +39,52 @@ const Pets = () => {
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <th scope="col" className="px-6 py-3">
-                                Product name
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Color
+                                Name
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Category
                             </th>
                             <th scope="col" className="px-6 py-3">
-                                Price
+                                Bread
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Age
                             </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                Apple MacBook Pro 17"
-                            </th>
-                            <td className="px-6 py-4">
-                                Silver
-                            </td>
-                            <td className="px-6 py-4">
-                                Laptop
-                            </td>
-                            <td className="px-6 py-4">
-                                $2999
-                            </td>
-                        </tr>
-                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                Microsoft Surface Pro
-                            </th>
-                            <td className="px-6 py-4">
-                                White
-                            </td>
-                            <td className="px-6 py-4">
-                                Laptop PC
-                            </td>
-                            <td className="px-6 py-4">
-                                $1999
-                            </td>
-                        </tr>
-                        <tr className="bg-white dark:bg-gray-800">
-                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                Magic Mouse 2
-                            </th>
-                            <td className="px-6 py-4">
-                                Black
-                            </td>
-                            <td className="px-6 py-4">
-                                Accessories
-                            </td>
-                            <td className="px-6 py-4">
-                                $99
-                            </td>
-                        </tr>
+                        {pets.map((pet) => {
+                            return (
+                                <tr key={pet.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        {pet.name}
+                                    </th>
+                                    <td className="px-6 py-4">
+                                        {pet.category?.name}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {pet.breed?.name}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {pet.age}
+                                        {pet.isDanger == 1 && <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Danger</span>}
+                                    </td>
+                                </tr>
+                            )
+                        })}
+
+
                     </tbody>
                 </table>
             </div>
             {showAddModal &&
-                <AddPet />}
+                <AddPet handleClose={(reload) => {
+                    if (reload) {
+                        getPets()
+                    }
+                    setShowAddModal(false);
+
+                }} />}
 
         </div>
 

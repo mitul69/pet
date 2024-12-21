@@ -20,6 +20,9 @@ class Pet
     #[ORM\ManyToOne(inversedBy: 'pets')]
     private ?Category $category = null;
 
+    #[ORM\Column]
+    private ?string $gender = null;
+
     #[ORM\ManyToOne(inversedBy: 'pets')]
     private ?Breed $breed = null;
 
@@ -31,6 +34,8 @@ class Pet
 
     #[ORM\Column]
     private ?int $is_danger = null;
+
+
 
     public function getId(): ?int
     {
@@ -45,6 +50,18 @@ class Pet
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(?string $gender): static
+    {
+        $this->gender = $gender;
 
         return $this;
     }
@@ -99,12 +116,12 @@ class Pet
 
     public function getIsDanger(): ?int
     {
-        return $this->is_denger;
+        return $this->is_danger;
     }
 
-    public function setIsDanger(int $is_denger): static
+    public function setIsDanger(int $is_danger): static
     {
-        $this->is_denger = $is_denger;
+        $this->is_danger = $is_danger;
 
         return $this;
     }
